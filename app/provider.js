@@ -1,7 +1,8 @@
-'use client';
+"use client";
 import { db } from "@/configs/db";
 import { USER_TABLE } from "@/configs/schema";
 import { useUser } from "@clerk/nextjs";
+import axios from "axios";
 import { eq } from "drizzle-orm";
 import React, { useEffect } from "react";
 
@@ -12,30 +13,65 @@ function Provider({ children }) {
     user && CheckIsNewUser();
   }, [user]);
 
-  const CheckIsNewUser = async () => {
-    // check the user is already exist or not
+    const CheckIsNewUser = async () => {
+      // // check the user is already exist or not
 
-    const result = await db
-      .select()
-      .from(USER_TABLE)
-      .where(eq(USER_TABLE.email, user?.primaryEmailAddress?.emailAddress));
+      // const result = await db
+      //   .select()
+      //   .from(USER_TABLE)
+      //   .where(eq(USER_TABLE.email, user?.primaryEmailAddress?.emailAddress));
 
-    console.log(result);
-    if (result?.length == 0) {
-      // if Not, Then add the user ot DB
-      const userRes = await db
-        .insert(USER_TABLE)
-        .values({
-          name: user?.fullName,
-          email: user?.primaryEmailAddress?.emailAddress,
-        })
-        .returning({ id: USER_TABLE.id });
+      // console.log(result);
+      // if (result?.length == 0) {
+      //   // if Not, Then add the user ot DB
+      //   const userRes = await db
+      //     .insert(USER_TABLE)
+      //     .values({
+      //       name: user?.fullName,
+      //       email: user?.primaryEmailAddress?.emailAddress, 
+      //     })
+      //     .returning({ id: USER_TABLE.id });
 
-      console.log(userRes);
-    }
-  };
+      //   console.log(userRes);
+      // }
+      const resp = await axios.post('/api/create-user',{user:user})
+      console.log(resp.data)
+    };
 
-  return <div>{children}</div>;
-}
+    return <div>{children}</div>;
+  }
 
-export default Provider;
+  export default Provider;
+
+//   const CheckIsNewUser = async () => {
+//     try {
+//       const result = await db
+//         .select()
+//         .from(USER_TABLE)
+//         .where(eq(USER_TABLE.email, user?.primaryEmailAddress?.emailAddress));
+
+//       console.log(result);
+
+//       if (result?.length === 0) {
+//         const userRes = await db
+//           .insert(USER_TABLE)
+//           .values({
+//             name: user?.fullName,
+//             email: user?.primaryEmailAddress?.emailAddress,
+//           })
+//           .returning({ id: USER_TABLE.id });
+
+//         console.log(userRes);
+//       }
+
+//       const resq = await axios.post("/api/inngest", { user });
+//       console.log(resq.data);
+//     } catch (error) {
+//       console.error("Error in CheckIsNewUser:", error);
+//     }
+//   };
+
+//   return <div>{children}</div>;
+// }
+
+// export default Provider;
