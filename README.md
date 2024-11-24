@@ -20,7 +20,7 @@ Second, run the Drzzle Studio
 npm npx drizzle-kit studio
 ```
 
-Third, run ingest development dev
+Third, run inngest development dev
 
 ```bash
 npx inngest-cli@latest dev

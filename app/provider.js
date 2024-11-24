@@ -42,36 +42,3 @@ function Provider({ children }) {
   }
 
   export default Provider;
-
-//   const CheckIsNewUser = async () => {
-//     try {
-//       const result = await db
-//         .select()
-//         .from(USER_TABLE)
-//         .where(eq(USER_TABLE.email, user?.primaryEmailAddress?.emailAddress));
-
-//       console.log(result);
-
-//       if (result?.length === 0) {
-//         const userRes = await db
-//           .insert(USER_TABLE)
-//           .values({
-//             name: user?.fullName,
-//             email: user?.primaryEmailAddress?.emailAddress,
-//           })
-//           .returning({ id: USER_TABLE.id });
-
-//         console.log(userRes);
-//       }
-
-//       const resq = await axios.post("/api/inngest", { user });
-//       console.log(resq.data);
-//     } catch (error) {
-//       console.error("Error in CheckIsNewUser:", error);
-//     }
-//   };
-
-//   return <div>{children}</div>;
-// }
-
-// export default Provider;
