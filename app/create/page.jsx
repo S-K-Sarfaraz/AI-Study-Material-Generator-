@@ -3,10 +3,21 @@ import React, { useState } from "react";
 import SelectOptions from "./_components/SelectOptions";
 import { Button } from "@/components/ui/button";
 import TopicInput from "./_components/TopicInput";
+import axios from "axios";
+import { v4 as uuidv4 } from 'uuid';
+import { useUser } from "@clerk/nextjs";
+import { Loader } from "lucide-react";
+import { useRouter } from "next/navigation";
+
 
 function Create() {
   const [step, setStep] = useState(0);
   const [formData, setFormData] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const router = useRouter();
+
+  const {user} = useUser();
 
   const handleUserInput = (fieldName, fieldValue) => {
 
@@ -16,8 +27,38 @@ function Create() {
     }))
 
     console.log(formData);
-
   };
+
+  // this method save user input and to generate the course Layout
+  // const GenerateCourseOutline = async ()=>{
+  //   const courseId = uuidv4();
+  //   const result = await axios.post('/api/generate-course-outline',{
+  //     courseId: courseId,
+  //     ...formData,
+  //     createdBy:user?.primaryEmailAddress?.emailAddress
+  //   })
+
+  //   console.log(result);
+  // }
+
+  const GenerateCourseOutline = async () => {
+    try {
+      const courseId = uuidv4();
+      setLoading(true);
+      const result = await axios.post('/api/generate-course-outline', {
+        courseId: courseId,
+        ...formData,
+        createdBy: user?.primaryEmailAddress?.emailAddress,
+      });
+      setLoading(false);
+      router.replace('/dashboard');
+      console.log(result.data.result.resp);
+    } catch (error) {
+      console.error('Error generating course outline:', error.response?.data || error.message);
+    }
+  };
+  
+
   return (
     <div className="flex flex-col items-center p-5 md:px-24 lg:px-36 mt-20">
       <h2 className="font-bold text-4xl text-primary">
@@ -29,7 +70,7 @@ function Create() {
       <div className="mt-10">
         {step == 0 ? (
           <SelectOptions
-            selectedStudyType={(value) => handleUserInput("studyType", value)}
+            selectedStudyType={(value) => handleUserInput("courseType", value)}
           />
         ) : (
           <TopicInput
@@ -51,7 +92,7 @@ function Create() {
         {step == 0 ? (
           <Button onClick={() => setStep(step + 1)}>Next</Button>
         ) : (
-          <Button>Generate Course</Button>
+          <Button onClick={GenerateCourseOutline} disabled={loading}>{loading?<Loader className="animate-spin"/>:"Generate"}</Button>
         )}
       </div>
     </div>
