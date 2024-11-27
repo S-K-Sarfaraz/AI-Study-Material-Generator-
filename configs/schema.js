@@ -1,4 +1,4 @@
-import { boolean, json, pgTable, serial, varchar } from "drizzle-orm/pg-core";
+import { boolean, json, pgTable, serial, text, varchar } from "drizzle-orm/pg-core";
 
 export const USER_TABLE = pgTable('users', {
     id: serial("id").primaryKey(),
@@ -16,4 +16,11 @@ export const STUDY_MATERIAL_TABLE = pgTable('study_materials', {
     courseLayout: json(),
     createdBy: varchar("created_by").notNull(),
     status: varchar("status").default("Generating"),
+})
+
+export const CHAPTER_NOTES_TABLE = pgTable('chapter_notes', {
+    id: serial("id").primaryKey(),
+    courseId: varchar("course_id").notNull(),
+    chapterId: varchar("chapter_id").notNull(),
+    notes:text(),
 })
